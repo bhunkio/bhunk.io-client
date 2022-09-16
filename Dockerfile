@@ -12,4 +12,3 @@ SHELL ["/bin/bash", "-c"]
 RUN conda env create -f environment.yaml
 RUN conda init bash
 RUN apt-get install libglib2.0-0 libsm6 libxrender1 -y
-RUN python scripts/txt2img.py --prompt "temp_prompt to download helper weights" --plms --ckpt /weights/sd-v1-4.ckpt --skip_grid --n_samples 1
