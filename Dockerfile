@@ -13,3 +13,4 @@ RUN conda init bash
 RUN apt-get install libglib2.0-0 libsm6 libxrender1 -y
 COPY weights/sd-v1-4.ckpt /app/stable-diffusion/models/ldm/stable-diffusion-v1/model.ckpt
 COPY bhunkio.py /app/stable-diffusion/bhunkio.py
+COPY lib /app/stable-diffusion/lib

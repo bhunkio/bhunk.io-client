@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from glob import glob
-from scripts.txt2img import txt_to_img, TxtToImgRequest
+from lib.txt2img import txt_to_img, TxtToImgRequest
 import shutil
 
 
@@ -12,6 +12,13 @@ import urllib
 
 URL = os.environ.get("BHUNKIO_URL")
 KEY = os.environ.get("API_KEY")
+
+HEADERS = {
+    'bhunkio_auth': KEY
+}
+
+CHECK_JOB_PATH = "/api/worker/jobs"
+PUSH_RESULT_PATH = "/api/worker/results"
 
 
 def build_url(base_url, path, args_dict={}):
@@ -72,15 +79,15 @@ def main():
     while True:
         print("getting jobs..")
         job_request = requests.get(
-            build_url(URL, "/api/jobs"),
-            headers={'Authorization': KEY}
+            build_url(URL, CHECK_JOB_PATH),
+            headers=HEADERS,
         )
         if job_request and job_request.json().get('uuid') != None:
             print(f"Got a job! - {job_request.json()}")
             result = do_job(PromptQueue(**job_request.json()))
             response = requests.post(
-                build_url(URL, "/api/jobs"),
-                headers={'Authorization': KEY},
+                build_url(URL, PUSH_RESULT_PATH),
+                headers=HEADERS,
                 json=result
             )
         else:
