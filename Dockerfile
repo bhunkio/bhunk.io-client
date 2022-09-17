@@ -1,5 +1,4 @@
 FROM pytorch/pytorch:1.12.1-cuda11.3-cudnn8-runtime
-COPY weights /weights
 RUN apt-get update
 RUN apt-get install python3.8 git -y
 
@@ -12,3 +11,6 @@ SHELL ["/bin/bash", "-c"]
 RUN conda env create -f environment.yaml
 RUN conda init bash
 RUN apt-get install libglib2.0-0 libsm6 libxrender1 -y
+COPY weights/sd-v1-4.ckpt /app/stable-diffusion/models/ldm/stable-diffusion-v1/model.ckpt
+COPY bhunkio.py /app/stable-diffusion/bhunkio.py
+COPY lib /app/stable-diffusion/lib
