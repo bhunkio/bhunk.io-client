@@ -51,6 +51,8 @@ class PromptQueue:
     current_worker: str
     created_at: str
     job_started_time: str
+    model_type: str
+    request_input_params: str
 
 
 def image_to_binary(path: str) -> str:
@@ -68,7 +70,7 @@ def do_job(prompt_request: PromptQueue):
     shutil.rmtree(out_dir)
 
     return {
-        "images": binary_images,
+        "result": { "images": binary_images }, 
         "prompt_uuid": prompt_request.uuid,
         "user_uuid": prompt_request.user_id,
     }
@@ -79,7 +81,7 @@ def main():
     while True:
         print("getting jobs..")
         job_request = requests.get(
-            build_url(URL, CHECK_JOB_PATH),
+            build_url(URL, CHECK_JOB_PATH, {"modelType": 'StableDiffusionV1_4'}),
             headers=HEADERS,
         )
         if job_request and job_request.json().get('uuid') != None:
@@ -90,9 +92,10 @@ def main():
                 headers=HEADERS,
                 json=result
             )
+            print(f"finished job! Response: {response}")
         else:
             print(f"no response {job_request.text}")
-            sleep(1)
+            sleep(5)
             continue
 
 
